@@ -5,6 +5,7 @@
 import { INLINE_SERVER_ROUTE_PREFIX } from "./constants.js";
 import nodePath from "path";
 import crypto from "crypto";
+import { addNamed } from "@babel/helper-module-imports";
 
 function transformServer({ types: t, template }) {
   function getIdentifier(path) {
@@ -177,6 +178,7 @@ function transformServer({ types: t, template }) {
                       })
                     );
                   } else {
+                    addNamed(path, "createFetcher", "solid-start/server/client");
                     statement.insertBefore(
                       template(
                         `
@@ -185,7 +187,7 @@ function transformServer({ types: t, template }) {
                             ? `server.registerHandler("${route}", server.createHandler(%%source%%, "${route}"));`
                             : ``
                         }
-                        const $$server_module${serverIndex} = server.createFetcher("${route}");`,
+                        const $$server_module${serverIndex} = createFetcher("${route}");`,
                         {
                           syntacticPlaceholders: true
                         }
